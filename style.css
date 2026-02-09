@@ -1,0 +1,622 @@
+:root {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --bg-hover: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --success: #10b981;
+    --danger: #ef4444;
+    --border: #334155;
+    --radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.logo i {
+    font-size: 2rem;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+nav a:hover,
+nav a.active {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+}
+
+/* Main Content */
+.content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+header {
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: var(--text-muted);
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 1.5rem;
+    height: calc(100vh - 180px);
+    /* Adjust height */
+}
+
+/* Cards */
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.config-panel {
+    gap: 1.5rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Forms */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+select,
+input {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+select:focus,
+input:focus {
+    border-color: var(--primary);
+}
+
+.file-upload {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+}
+
+.file-upload:hover {
+    border-color: var(--primary);
+    background-color: rgba(99, 102, 241, 0.05);
+}
+
+.file-upload input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-upload i {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn.primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn.primary:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+
+.btn.secondary {
+    background-color: var(--bg-hover);
+    color: var(--text-main);
+}
+
+.btn.secondary:hover:not(:disabled) {
+    background-color: #475569;
+}
+
+.btn.success {
+    background-color: var(--success);
+    color: white;
+}
+
+.btn.success:hover:not(:disabled) {
+    background-color: #059669;
+}
+
+/* Results Table */
+.results-panel {
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.badge {
+    background-color: var(--bg-dark);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    color: var(--primary);
+}
+
+.filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--bg-dark);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    background-color: var(--bg-card);
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.status-valid {
+    color: var(--success);
+}
+
+.status-invalid {
+    color: var(--danger);
+}
+
+.panel-footer {
+    padding-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    animation: slideIn 0.3s ease-out;
+}
+
+.toast.hidden {
+    display: none;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.empty-state {
+    height: 200px;
+}
+
+.empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    gap: 1rem;
+}
+
+.empty-content i {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+/* Action Buttons */
+.action-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+}
+
+.action-btn.wa:hover {
+    background-color: #25D366;
+    border-color: #25D366;
+    color: white;
+}
+
+.action-btn.tg:hover {
+    background-color: #0088cc;
+    border-color: #0088cc;
+    color: white;
+}
+
+/* Mobile Responsive Styles */
+@media screen and (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+        font-size: 1.25rem;
+    }
+
+    .logo i {
+        font-size: 1.5rem;
+    }
+
+    nav {
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    nav a {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    header p {
+        font-size: 0.875rem;
+    }
+
+    .grid-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 1rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+    }
+
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .filters {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .filter-btn {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.65rem;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    th,
+    td {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .action-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .panel-footer {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 0.65rem 1rem;
+    }
+
+    .toast {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+
+    .badge {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    select,
+    input {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+    }
+
+    .file-upload {
+        padding: 1.5rem 1rem;
+    }
+
+    .file-upload i {
+        font-size: 1.5rem;
+    }
+
+    .file-upload span {
+        font-size: 0.875rem;
+    }
+}
+
+/* Extra small screens */
+@media screen and (max-width: 480px) {
+    .sidebar {
+        padding: 0.75rem;
+    }
+
+    .logo span {
+        font-size: 1.1rem;
+    }
+
+    nav a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    nav a i {
+        font-size: 1rem;
+    }
+
+    .content {
+        padding: 0.75rem;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    .card {
+        padding: 0.75rem;
+    }
+
+    h2 {
+        font-size: 1rem;
+    }
+
+    .panel-header h2 {
+        width: 100%;
+    }
+
+    th,
+    td {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .action-cell {
+        gap: 0.3rem;
+    }
+
+    .action-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 0.85rem;
+    }
+}

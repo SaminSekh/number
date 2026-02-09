@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Marketing Tool - Number Generator</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- LibPhoneNumber-JS (Google's library port) -->
+    <script src="https://unpkg.com/libphonenumber-js@1.10.49/bundle/libphonenumber-max.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="ph ph-rocket-launch"></i>
+                <span>BizMarketer</span>
+            </div>
+            <nav>
+                <a href="#" class="active"><i class="ph ph-hash"></i> Generator</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header>
+                <h1>Number Generator</h1>
+                <p>Generate valid mobile numbers for any country.</p>
+            </header>
+
+            <div class="grid-layout">
+                <!-- Configuration Panel -->
+                <section class="card config-panel">
+                    <h2>Configuration</h2>
+
+                    <div class="form-group">
+                        <label>Target Country</label>
+                        <select id="countrySelect">
+                            <option value="" disabled selected>Loading countries...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prefix (Starting Digits After Country Code)</label>
+                        <input type="text" id="prefixInput" placeholder="e.g. 17, 555, 70" maxlength="5">
+                        <small>Optional: Digits to place right after country code (e.g.
+                            +880<strong>17</strong>XXXXX)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="quantityInput" min="1" max="1000000" value="100"
+                            placeholder="e.g. 1000">
+                        <small>Max: 1,000,000 per batch</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reference File (Optional)</label>
+                        <div class="file-upload" id="fileUploadArea">
+                            <i class="ph ph-upload-simple"></i>
+                            <span>Drop pattern file or click to upload</span>
+                            <input type="file" id="referenceFile" accept=".txt,.csv">
+                        </div>
+                        <div id="fileInfo" class="hidden"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button id="generateBtn" class="btn primary">
+                            <i class="ph ph-lightning"></i> Generate Numbers
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Results Panel -->
+                <section class="card results-panel">
+                    <div class="panel-header">
+                        <h2>Generated Results <span id="resultCount" class="badge">0</span></h2>
+                        <div class="filters">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="valid">Valid/Social</button>
+                            <button class="filter-btn" data-filter="odd">Odds</button>
+                            <button class="filter-btn" data-filter="even">Evens</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Number</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows will be populated here -->
+                                <tr class="empty-state">
+                                    <td colspan="4">
+                                        <div class="empty-content">
+                                            <i class="ph ph-ghost"></i>
+                                            <p>No numbers generated yet.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="panel-footer">
+                        <button id="validateBtn" class="btn secondary" disabled>
+                            <i class="ph ph-check-circle"></i> Check Validity
+                        </button>
+                        <button id="exportBtn" class="btn success" disabled>
+                            <i class="ph ph-microsoft-excel-logo"></i> Export to Excel
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

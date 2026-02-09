@@ -1,0 +1,505 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Mobile Patterns Database ---
+    const MOBILE_PATTERNS = {
+        'BD': { prefixes: ['13', '14', '15', '16', '17', '18', '19'], length: 10 },
+        'IN': { prefixes: ['62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99'], length: 10 },
+        'PK': { prefixes: ['30', '31', '32', '33', '34', '35'], length: 10 },
+        'LK': { prefixes: ['70', '71', '72', '75', '76', '77', '78'], length: 9 },
+        'NP': { prefixes: ['97', '98'], length: 10 },
+        'SA': { prefixes: ['50', '51', '52', '53', '54', '55', '56', '57', '58', '59'], length: 9 },
+        'AE': { prefixes: ['50', '52', '54', '55', '56', '58'], length: 9 },
+        'QA': { prefixes: ['3', '5', '6', '7'], length: 8 },
+        'KW': { prefixes: ['5', '6', '9'], length: 8 },
+        'GB': { prefixes: ['7'], length: 10 },
+        'DE': { prefixes: ['15', '16', '17'], length: 11 },
+        'FR': { prefixes: ['6', '7'], length: 9 },
+        'IT': { prefixes: ['3'], length: 10 },
+        'ES': { prefixes: ['6', '7'], length: 9 },
+        'US': { prefixes: ['2', '3', '4', '5', '6', '7', '8', '9'], length: 10 },
+        'CA': { prefixes: ['2', '3', '4', '5', '6', '7', '8', '9'], length: 10 },
+        'MX': { prefixes: ['1'], length: 10 },
+        'BR': { prefixes: ['11', '12', '13', '14', '15', '16', '17', '18', '19', '21'], length: 11 },
+        'CN': { prefixes: ['13', '14', '15', '16', '17', '18', '19'], length: 11 },
+        'JP': { prefixes: ['70', '80', '90'], length: 10 },
+        'AU': { prefixes: ['4'], length: 9 },
+        'NG': { prefixes: ['70', '80', '81', '90', '91'], length: 10 },
+        'ZA': { prefixes: ['6', '7', '8'], length: 9 },
+        'EG': { prefixes: ['10', '11', '12', '15'], length: 10 },
+        'DEFAULT': { prefixes: ['5', '6', '7', '8', '9'], length: 10 }
+    };
+
+    // --- Elements ---
+    const countrySelect = document.getElementById('countrySelect');
+    const quantityInput = document.getElementById('quantityInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
+    const resultCount = document.getElementById('resultCount');
+    const validateBtn = document.getElementById('validateBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const fileUpload = document.getElementById('referenceFile');
+    const fileInfo = document.getElementById('fileInfo');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    // --- State ---
+    let generatedNumbers = [];
+    let currentFilter = 'all';
+    let referencePattern = null;
+
+    // --- LibPhoneNumber Instance ---
+    // The library is loaded globally as 'libphonenumber'
+    // We will use it to populate countries and generate examples.
+
+    // --- Initialization ---
+    populateCountries();
+
+    // --- Event Listeners ---
+    generateBtn.addEventListener('click', generateNumbers);
+    validateBtn.addEventListener('click', validateNumbersStrict);
+    exportBtn.addEventListener('click', exportToExcel);
+
+    fileUpload.addEventListener('change', handleFileUpload);
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderTable();
+        });
+    });
+
+    // --- Functions ---
+
+    function populateCountries() {
+        countrySelect.innerHTML = '';
+
+        // Comprehensive list of all countries (A-Z)
+        const countries = [
+            { code: 'AF', name: 'Afghanistan' }, { code: 'AL', name: 'Albania' }, { code: 'DZ', name: 'Algeria' },
+            { code: 'AD', name: 'Andorra' }, { code: 'AO', name: 'Angola' }, { code: 'AR', name: 'Argentina' },
+            { code: 'AM', name: 'Armenia' }, { code: 'AU', name: 'Australia' }, { code: 'AT', name: 'Austria' },
+            { code: 'AZ', name: 'Azerbaijan' }, { code: 'BS', name: 'Bahamas' }, { code: 'BH', name: 'Bahrain' },
+            { code: 'BD', name: 'Bangladesh' }, { code: 'BY', name: 'Belarus' }, { code: 'BE', name: 'Belgium' },
+            { code: 'BZ', name: 'Belize' }, { code: 'BJ', name: 'Benin' }, { code: 'BT', name: 'Bhutan' },
+            { code: 'BO', name: 'Bolivia' }, { code: 'BA', name: 'Bosnia' }, { code: 'BW', name: 'Botswana' },
+            { code: 'BR', name: 'Brazil' }, { code: 'BN', name: 'Brunei' }, { code: 'BG', name: 'Bulgaria' },
+            { code: 'BF', name: 'Burkina Faso' }, { code: 'BI', name: 'Burundi' }, { code: 'KH', name: 'Cambodia' },
+            { code: 'CM', name: 'Cameroon' }, { code: 'CA', name: 'Canada' }, { code: 'CV', name: 'Cape Verde' },
+            { code: 'CF', name: 'Central African Republic' }, { code: 'TD', name: 'Chad' }, { code: 'CL', name: 'Chile' },
+            { code: 'CN', name: 'China' }, { code: 'CO', name: 'Colombia' }, { code: 'KM', name: 'Comoros' },
+            { code: 'CG', name: 'Congo' }, { code: 'CR', name: 'Costa Rica' }, { code: 'HR', name: 'Croatia' },
+            { code: 'CU', name: 'Cuba' }, { code: 'CY', name: 'Cyprus' }, { code: 'CZ', name: 'Czech Republic' },
+            { code: 'DK', name: 'Denmark' }, { code: 'DJ', name: 'Djibouti' }, { code: 'DO', name: 'Dominican Republic' },
+            { code: 'EC', name: 'Ecuador' }, { code: 'EG', name: 'Egypt' }, { code: 'SV', name: 'El Salvador' },
+            { code: 'GQ', name: 'Equatorial Guinea' }, { code: 'ER', name: 'Eritrea' }, { code: 'EE', name: 'Estonia' },
+            { code: 'ET', name: 'Ethiopia' }, { code: 'FJ', name: 'Fiji' }, { code: 'FI', name: 'Finland' },
+            { code: 'FR', name: 'France' }, { code: 'GA', name: 'Gabon' }, { code: 'GM', name: 'Gambia' },
+            { code: 'GE', name: 'Georgia' }, { code: 'DE', name: 'Germany' }, { code: 'GH', name: 'Ghana' },
+            { code: 'GR', name: 'Greece' }, { code: 'GT', name: 'Guatemala' }, { code: 'GN', name: 'Guinea' },
+            { code: 'GW', name: 'Guinea-Bissau' }, { code: 'GY', name: 'Guyana' }, { code: 'HT', name: 'Haiti' },
+            { code: 'HN', name: 'Honduras' }, { code: 'HK', name: 'Hong Kong' }, { code: 'HU', name: 'Hungary' },
+            { code: 'IS', name: 'Iceland' }, { code: 'IN', name: 'India' }, { code: 'ID', name: 'Indonesia' },
+            { code: 'IR', name: 'Iran' }, { code: 'IQ', name: 'Iraq' }, { code: 'IE', name: 'Ireland' },
+            { code: 'IL', name: 'Israel' }, { code: 'IT', name: 'Italy' }, { code: 'JM', name: 'Jamaica' },
+            { code: 'JP', name: 'Japan' }, { code: 'JO', name: 'Jordan' }, { code: 'KZ', name: 'Kazakhstan' },
+            { code: 'KE', name: 'Kenya' }, { code: 'KI', name: 'Kiribati' }, { code: 'KP', name: 'North Korea' },
+            { code: 'KR', name: 'South Korea' }, { code: 'KW', name: 'Kuwait' }, { code: 'KG', name: 'Kyrgyzstan' },
+            { code: 'LA', name: 'Laos' }, { code: 'LV', name: 'Latvia' }, { code: 'LB', name: 'Lebanon' },
+            { code: 'LS', name: 'Lesotho' }, { code: 'LR', name: 'Liberia' }, { code: 'LY', name: 'Libya' },
+            { code: 'LI', name: 'Liechtenstein' }, { code: 'LT', name: 'Lithuania' }, { code: 'LU', name: 'Luxembourg' },
+            { code: 'MO', name: 'Macau' }, { code: 'MK', name: 'Macedonia' }, { code: 'MG', name: 'Madagascar' },
+            { code: 'MW', name: 'Malawi' }, { code: 'MY', name: 'Malaysia' }, { code: 'MV', name: 'Maldives' },
+            { code: 'ML', name: 'Mali' }, { code: 'MT', name: 'Malta' }, { code: 'MR', name: 'Mauritania' },
+            { code: 'MU', name: 'Mauritius' }, { code: 'MX', name: 'Mexico' }, { code: 'MD', name: 'Moldova' },
+            { code: 'MC', name: 'Monaco' }, { code: 'MN', name: 'Mongolia' }, { code: 'ME', name: 'Montenegro' },
+            { code: 'MA', name: 'Morocco' }, { code: 'MZ', name: 'Mozambique' }, { code: 'MM', name: 'Myanmar' },
+            { code: 'NA', name: 'Namibia' }, { code: 'NP', name: 'Nepal' }, { code: 'NL', name: 'Netherlands' },
+            { code: 'NZ', name: 'New Zealand' }, { code: 'NI', name: 'Nicaragua' }, { code: 'NE', name: 'Niger' },
+            { code: 'NG', name: 'Nigeria' }, { code: 'NO', name: 'Norway' }, { code: 'OM', name: 'Oman' },
+            { code: 'PK', name: 'Pakistan' }, { code: 'PS', name: 'Palestine' }, { code: 'PA', name: 'Panama' },
+            { code: 'PG', name: 'Papua New Guinea' }, { code: 'PY', name: 'Paraguay' }, { code: 'PE', name: 'Peru' },
+            { code: 'PH', name: 'Philippines' }, { code: 'PL', name: 'Poland' }, { code: 'PT', name: 'Portugal' },
+            { code: 'QA', name: 'Qatar' }, { code: 'RO', name: 'Romania' }, { code: 'RU', name: 'Russia' },
+            { code: 'RW', name: 'Rwanda' }, { code: 'SA', name: 'Saudi Arabia' }, { code: 'SN', name: 'Senegal' },
+            { code: 'RS', name: 'Serbia' }, { code: 'SC', name: 'Seychelles' }, { code: 'SL', name: 'Sierra Leone' },
+            { code: 'SG', name: 'Singapore' }, { code: 'SK', name: 'Slovakia' }, { code: 'SI', name: 'Slovenia' },
+            { code: 'SO', name: 'Somalia' }, { code: 'ZA', name: 'South Africa' }, { code: 'SS', name: 'South Sudan' },
+            { code: 'ES', name: 'Spain' }, { code: 'LK', name: 'Sri Lanka' }, { code: 'SD', name: 'Sudan' },
+            { code: 'SR', name: 'Suriname' }, { code: 'SZ', name: 'Swaziland' }, { code: 'SE', name: 'Sweden' },
+            { code: 'CH', name: 'Switzerland' }, { code: 'SY', name: 'Syria' }, { code: 'TW', name: 'Taiwan' },
+            { code: 'TJ', name: 'Tajikistan' }, { code: 'TZ', name: 'Tanzania' }, { code: 'TH', name: 'Thailand' },
+            { code: 'TL', name: 'Timor-Leste' }, { code: 'TG', name: 'Togo' }, { code: 'TO', name: 'Tonga' },
+            { code: 'TT', name: 'Trinidad and Tobago' }, { code: 'TN', name: 'Tunisia' }, { code: 'TR', name: 'Turkey' },
+            { code: 'TM', name: 'Turkmenistan' }, { code: 'UG', name: 'Uganda' }, { code: 'UA', name: 'Ukraine' },
+            { code: 'AE', name: 'UAE' }, { code: 'GB', name: 'United Kingdom' }, { code: 'US', name: 'United States' },
+            { code: 'UY', name: 'Uruguay' }, { code: 'UZ', name: 'Uzbekistan' }, { code: 'VU', name: 'Vanuatu' },
+            { code: 'VE', name: 'Venezuela' }, { code: 'VN', name: 'Vietnam' }, { code: 'YE', name: 'Yemen' },
+            { code: 'ZM', name: 'Zambia' }, { code: 'ZW', name: 'Zimbabwe' }
+        ];
+
+        // Already sorted A-Z by name
+        const fragment = document.createDocumentFragment();
+        countries.forEach(c => {
+            // Get dial code using libphonenumber if possible, else just show name
+            let dialCode = '';
+            try {
+                dialCode = '+' + libphonenumber.getCountryCallingCode(c.code);
+            } catch (e) { }
+
+            const option = document.createElement('option');
+            option.value = c.code;
+            option.textContent = `${c.name} (${dialCode})`;
+            if (c.code === 'US') option.selected = true;
+            fragment.appendChild(option);
+        });
+        countrySelect.appendChild(fragment);
+    }
+
+    function handleFileUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        fileInfo.textContent = `Analyzing: ${file.name}...`;
+        fileInfo.classList.remove('hidden');
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const content = event.target.result;
+            const match = content.match(/(\+|00)?\d{8,15}/);
+
+            if (match) {
+                let rawNum = match[0].replace(/^00/, '+');
+                if (!rawNum.startsWith('+')) rawNum = '+' + rawNum;
+
+                referencePattern = {
+                    fullExample: rawNum,
+                    length: rawNum.length
+                };
+
+                fileInfo.innerHTML = `Reference: <strong>${rawNum}</strong> detected.<br>Pattern locked for generation.`;
+                fileInfo.style.color = 'var(--success)';
+                showToast('Reference pattern detected!');
+            } else {
+                fileInfo.innerHTML = `No valid number found in file.<br>Using Country Selection instead.`;
+                fileInfo.style.color = 'var(--danger)';
+                referencePattern = null;
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function generateNumbers() {
+        const qty = parseInt(quantityInput.value);
+        if (qty > 1000000) {
+            showToast("Max limit is 1,000,000 numbers.");
+            return;
+        }
+
+        generatedNumbers = [];
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Generating...';
+
+        setTimeout(async () => {
+            if (referencePattern) {
+                generateFromReference(qty);
+            } else {
+                await generateFromLibPhoneNumber(qty);
+            }
+
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = '<i class="ph ph-lightning"></i> Generate Numbers';
+
+            updateUI();
+            showToast(`${qty} numbers generated successfully!`);
+        }, 100);
+    }
+
+    async function generateFromLibPhoneNumber(qty) {
+        const countryCode = countrySelect.value;
+        let dialCode = '';
+
+        try {
+            dialCode = '+' + libphonenumber.getCountryCallingCode(countryCode);
+        } catch (e) {
+            console.error("Error getting dial code:", e);
+            showToast("Error getting country code. Using generic.");
+            generateFromReference(qty);
+            return;
+        }
+
+        // Smart Probe Strategy:
+        // Since getExampleNumber() can be flaky without full metadata,
+        // we Probe for a valid pattern by testing random numbers against the validator.
+
+        let validPattern = null;
+        const lengths = [10, 9, 8, 11, 7, 12, 13]; // Common mobile lengths
+        const prefixes = ['5', '6', '7', '8', '9', '1', '2', '3', '4']; // Common mobile start digits
+
+        // heavy task, let UI breathe
+        await new Promise(r => setTimeout(r, 0));
+
+        searchLoop:
+        for (let len of lengths) {
+            for (let pre of prefixes) {
+                // Construct test number: DialCode + Prefix + RandomDigits
+                // len excludes dialcode usually in national number length, but we construct full E.164
+                // Let's try to construct a National Number of length 'len'
+
+                const randomPartLen = len - pre.length;
+                if (randomPartLen < 0) continue;
+
+                const randomPart = Math.floor(Math.random() * Math.pow(10, randomPartLen)).toString().padStart(randomPartLen, '0');
+                const testNum = `${dialCode}${pre}${randomPart}`;
+
+                try {
+                    const parsed = libphonenumber.parsePhoneNumber(testNum);
+                    if (parsed.isValid()) {
+                        // Double check type if possible, though strict validity is often enough
+                        if (parsed.getType() === 'MOBILE' || parsed.getType() === 'FIXED_LINE_OR_MOBILE') {
+                            validPattern = { length: len, prefix: pre };
+                            break searchLoop;
+                        }
+                    }
+                } catch (e) { }
+            }
+        }
+
+        if (!validPattern) {
+            // Last resort fallback
+            console.warn("Probe failed for", countryCode, "Using generic 10-digit.");
+            validPattern = { length: 10, prefix: '' };
+        }
+
+        generateBatch(qty, { dialCode, ...validPattern });
+    }
+
+    function generateBatch(qty, params) {
+        const { dialCode, length, prefix } = params;
+        const randomLen = length - prefix.length;
+
+        let attempts = 0;
+        const maxAttempts = qty * 10; // Safety limit to prevent infinite loops
+
+        while (generatedNumbers.length < qty && attempts < maxAttempts) {
+            attempts++;
+
+            // Generate random number
+            let randomPart = '';
+            for (let j = 0; j < randomLen; j++) {
+                randomPart += Math.floor(Math.random() * 10);
+            }
+            const fullNumber = `${dialCode}${prefix}${randomPart}`;
+
+            // Validate immediately
+            let isValid = false;
+            try {
+                const parsed = libphonenumber.parsePhoneNumber(fullNumber);
+                isValid = parsed.isValid();
+            } catch (e) {
+                isValid = false;
+            }
+
+            // Only add if valid
+            if (isValid) {
+                generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
+            }
+        }
+
+        if (generatedNumbers.length < qty) {
+            showToast(`Generated ${generatedNumbers.length} valid numbers (some patterns failed validation)`);
+        }
+    }
+
+    function generateFromReference(qty) {
+        // Simple logic: Keep the first few digits (country code + maybe area code) 
+        // and randomize the last 5-7 digits.
+        const ex = referencePattern.fullExample;
+        const length = ex.length;
+
+        // Preservation heuristic: Keep first 4-5 chars (e.g. +121, +447)
+        const preserveLen = Math.min(length - 6, 5);
+        const prefix = ex.substring(0, preserveLen);
+        const randomLen = length - preserveLen;
+
+        let attempts = 0;
+        const maxAttempts = qty * 10;
+
+        while (generatedNumbers.length < qty && attempts < maxAttempts) {
+            attempts++;
+
+            let randomPart = '';
+            for (let j = 0; j < randomLen; j++) {
+                randomPart += Math.floor(Math.random() * 10);
+            }
+            const fullNumber = `${prefix}${randomPart}`;
+
+            // Validate
+            let isValid = false;
+            try {
+                const parsed = libphonenumber.parsePhoneNumber(fullNumber);
+                isValid = parsed.isValid();
+            } catch (e) {
+                isValid = false;
+            }
+
+            if (isValid) {
+                generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
+            }
+        }
+
+        if (generatedNumbers.length < qty) {
+            showToast(`Generated ${generatedNumbers.length} valid numbers from reference pattern`);
+        }
+    }
+
+    function createNumberObj(id, number, status = 'Valid') {
+        return {
+            id: id,
+            number: number,
+            status: status,
+            isEven: parseInt(number.slice(-1)) % 2 === 0
+        };
+    }
+
+    function validateNumbersStrict() {
+        validateBtn.disabled = true;
+        validateBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Validating Format...';
+
+        setTimeout(() => {
+            let validCount = 0;
+            generatedNumbers.forEach(item => {
+                // strict check using libphonenumber
+                let isValid = false;
+                try {
+                    const parsed = libphonenumber.parsePhoneNumber(item.number);
+                    isValid = parsed.isValid(); // Checks length, prefix, etc.
+                } catch (e) {
+                    isValid = false;
+                }
+
+                item.status = isValid ? 'Valid' : 'Invalid';
+                if (isValid) validCount++;
+            });
+
+            validateBtn.disabled = false;
+            validateBtn.innerHTML = '<i class="ph ph-check-circle"></i> Check Validity';
+
+            // Auto-switch to 'valid' filter
+            currentFilter = 'valid';
+            filterBtns.forEach(b => b.classList.remove('active'));
+            const validBtn = Array.from(filterBtns).find(b => b.dataset.filter === 'valid');
+            if (validBtn) validBtn.classList.add('active');
+
+            renderTable();
+            showToast(`Strict Validation: ${validCount} valid numbers found.`);
+        }, 1000);
+    }
+
+    function updateUI() {
+        resultCount.textContent = generatedNumbers.length;
+        if (generatedNumbers.length > 0) {
+            validateBtn.disabled = false;
+            exportBtn.disabled = false;
+        }
+        renderTable();
+    }
+
+    function renderTable() {
+        resultsTable.innerHTML = '';
+
+        let filtered = generatedNumbers;
+
+        if (currentFilter === 'valid') {
+            filtered = generatedNumbers.filter(n => n.status === 'Valid');
+        } else if (currentFilter === 'odd') {
+            filtered = generatedNumbers.filter(n => !n.isEven);
+        } else if (currentFilter === 'even') {
+            filtered = generatedNumbers.filter(n => n.isEven);
+        }
+
+        const displayLimit = 500;
+        const toDisplay = filtered.slice(0, displayLimit);
+
+        if (toDisplay.length === 0) {
+            resultsTable.innerHTML = `
+                <tr class="empty-state">
+                    <td colspan="4">
+                        <div class="empty-content">
+                            <i class="ph ph-ghost"></i>
+                            <p>No matching numbers found.</p>
+                        </div>
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        toDisplay.forEach(item => {
+            const tr = document.createElement('tr');
+
+            let statusClass = '';
+            if (item.status === 'Valid') statusClass = 'status-valid';
+            if (item.status === 'Invalid') statusClass = 'status-invalid';
+
+            // Clean number for links (remove + for wa.me sometimes, but usually required. WA needs pure digits)
+            const cleanNum = item.number.replace(/\D/g, '');
+
+            tr.innerHTML = `
+                <td>${item.id}</td>
+                <td style="font-family: monospace; font-size: 1.1em;">${item.number}</td>
+                <td class="${statusClass}">${item.status}</td>
+                <td class="action-cell">
+                    <a href="https://wa.me/${cleanNum}" target="_blank" class="action-btn wa" title="Check WhatsApp">
+                        <i class="ph ph-whatsapp-logo"></i>
+                    </a>
+                    <a href="https://t.me/+${cleanNum}" target="_blank" class="action-btn tg" title="Check Telegram">
+                        <i class="ph ph-telegram-logo"></i>
+                    </a>
+                </td>
+            `;
+            fragment.appendChild(tr);
+        });
+
+        resultsTable.appendChild(fragment);
+
+        if (filtered.length > displayLimit) {
+            const infoRow = document.createElement('tr');
+            infoRow.innerHTML = `<td colspan="4" style="text-align: center; color: var(--text-muted);">...and ${filtered.length - displayLimit} more (export to see all)</td>`;
+            resultsTable.appendChild(infoRow);
+        }
+    }
+
+    function exportToExcel() {
+        if (generatedNumbers.length === 0) return;
+
+        const date = new Date().toISOString().slice(0, 10);
+        const filename = `Numbers_${date}.xlsx`;
+
+        const data = generatedNumbers.map(n => ({
+            ID: n.id,
+            Number: n.number,
+            Type: n.isEven ? 'Even' : 'Odd',
+            Status: n.status,
+            WhatsApp_Link: `https://wa.me/${n.number.replace(/\D/g, '')}`,
+            Telegram_Link: `https://t.me/+${n.number.replace(/\D/g, '')}`
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Numbers");
+        XLSX.writeFile(wb, filename);
+
+        showToast("Export downloaded!");
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.remove('hidden');
+        if (toast.timeoutId) clearTimeout(toast.timeoutId);
+        toast.timeoutId = setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3000);
+    }
+});
