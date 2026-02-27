@@ -1,104 +1,79 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Mobile Patterns Database (Most Popular Operators Only) ---
+    // --- Mobile Patterns Database (Expanded & Optimized) ---
     const MOBILE_PATTERNS = {
-        // Bangladesh - Grameenphone (17), Robi (18), Banglalink (19), Airtel (16), Teletalk (13, 15)
-        'BD': { prefixes: ['13', '15', '16', '17', '18', '19'], length: 10 },
-
-        // India - Jio, Airtel, Vi (6, 7, 8, 9 series)
-        'IN': { prefixes: ['62', '63', '70', '81', '82', '90', '91', '93', '95', '96', '97', '98', '99'], length: 10 },
-
-        // Pakistan - Jazz (30, 31, 32, 33), Telenor (34), Zong (31), Ufone (33)
-        'PK': { prefixes: ['300', '301', '302', '303', '304', '310', '311', '312', '320', '321', '330', '331', '333', '340', '341', '345'], length: 10 },
-
-        // Sri Lanka - Dialog (77, 76), Mobitel (71, 70), Hutch (78)
-        'LK': { prefixes: ['70', '71', '76', '77', '78'], length: 9 },
-
-        // Nepal - Ncell (98), NTC (97)
-        'NP': { prefixes: ['970', '971', '980', '981', '982', '984', '985'], length: 10 },
-
-        // Saudi Arabia - STC (50, 53, 54, 55, 56, 58, 59), Mobily (50, 54, 56), Zain (50, 55, 58, 59)
-        'SA': { prefixes: ['50', '53', '54', '55', '56', '58', '59'], length: 9 },
-
-        // UAE - Etisalat (50, 52, 54, 56), du (55, 56, 58)
-        'AE': { prefixes: ['50', '52', '54', '55', '56', '58'], length: 9 },
-
-        // Qatar - Ooredoo (3, 5, 6), Vodafone (3, 5, 6, 7)
-        'QA': { prefixes: ['3', '5', '6', '7'], length: 8 },
-
-        // Kuwait - Zain (5, 9), Ooredoo (5, 6), Viva (5, 6)
-        'KW': { prefixes: ['5', '6', '9'], length: 8 },
-
-        // United Kingdom - All networks (7)
-        'GB': { prefixes: ['7'], length: 10 },
-
-        // Germany - Telekom (15, 16, 17), Vodafone (15, 16, 17), O2 (15, 16, 17)
-        'DE': { prefixes: ['150', '151', '160', '170', '171', '175'], length: 11 },
-
-        // France - Orange (6, 7), SFR (6, 7), Bouygues (6, 7)
-        'FR': { prefixes: ['6', '7'], length: 9 },
-
-        // Italy - TIM (3), Vodafone (3), Wind Tre (3)
-        'IT': { prefixes: ['32', '33', '34', '35', '36', '38', '39'], length: 10 },
-
-        // Spain - Movistar (6, 7), Vodafone (6, 7), Orange (6, 7)
-        'ES': { prefixes: ['6', '7'], length: 9 },
-
-        // United States - Major area codes
-        'US': { prefixes: ['201', '202', '212', '213', '214', '267', '305', '310', '312', '323', '404', '415', '469', '510', '512', '562', '619', '626', '646', '702', '703', '714', '718', '720', '773', '786', '813', '818', '917'], length: 10 },
-
-        // Canada - Major area codes
-        'CA': { prefixes: ['204', '226', '289', '403', '416', '418', '438', '450', '514', '604', '647', '705', '778', '780', '819', '902', '905'], length: 10 },
-
-        // Mexico - Telcel (1)
-        'MX': { prefixes: ['1'], length: 10 },
-
-        // Brazil - São Paulo (11), Rio (21), Major cities
-        'BR': { prefixes: ['11', '12', '13', '14', '15', '21', '22', '31', '41', '47', '48', '51', '61', '71', '81', '85'], length: 11 },
-
-        // China - China Mobile (13, 15, 18), China Unicom (13, 15, 17), China Telecom (13, 18)
-        'CN': { prefixes: ['130', '131', '132', '133', '134', '135', '136', '137', '138', '139', '150', '151', '152', '170', '186', '187', '188', '189'], length: 11 },
-
-        // Japan - NTT DoCoMo (70, 80, 90), au (80, 90), SoftBank (70, 80, 90)
-        'JP': { prefixes: ['70', '80', '90'], length: 10 },
-
-        // Australia - Telstra (4), Optus (4), Vodafone (4)
-        'AU': { prefixes: ['4'], length: 9 },
-
-        // Nigeria - MTN (70, 80, 90), Glo (70, 80, 90), Airtel (70, 80, 90), 9mobile (90, 91)
-        'NG': { prefixes: ['70', '80', '81', '90', '91'], length: 10 },
-
-        // South Africa - Vodacom (60-68, 71, 72, 82, 83), MTN (71, 76, 78, 81, 82, 83), Cell C (74, 84)
-        'ZA': { prefixes: ['60', '63', '64', '65', '71', '72', '74', '76', '78', '81', '82', '83', '84'], length: 9 },
-
-        // Egypt - Vodafone (10, 11, 12), Orange (10, 11, 12), Etisalat (11, 15), WE (15)
-        'EG': { prefixes: ['10', '11', '12', '15'], length: 10 },
-
-        // Turkey - Turkcell (53, 54), Vodafone (54, 55), Turk Telekom (50)
-        'TR': { prefixes: ['50', '53', '54', '55'], length: 10 },
-
-        // Russia - MTS (91, 98), MegaFon (92, 93), Beeline (90, 96), Tele2 (95, 99)
-        'RU': { prefixes: ['900', '901', '902', '903', '905', '910', '915', '916', '917', '918', '919', '920', '922', '925', '926', '928', '929'], length: 10 },
-
-        // Thailand - AIS (6, 8, 9), dtac (8, 9), TrueMove (6, 8, 9)
-        'TH': { prefixes: ['6', '8', '9'], length: 9 },
-
-        // Malaysia - Maxis (11, 12, 13, 14, 17, 18, 19), Celcom (10, 11, 13, 14, 19), Digi (10, 11, 14, 16, 17, 18)
+        // --- ASIA & PACIFIC ---
+        'BD': { prefixes: ['13', '14', '15', '16', '17', '18', '19'], length: 10 },
+        'IN': { prefixes: ['6', '7', '8', '9'], length: 10 },
+        'PK': { prefixes: ['30', '31', '32', '33', '34', '35'], length: 10 },
+        'LK': { prefixes: ['70', '71', '72', '75', '76', '77', '78'], length: 9 },
+        'NP': { prefixes: ['97', '98'], length: 10 },
         'MY': { prefixes: ['10', '11', '12', '13', '14', '16', '17', '18', '19'], length: 9 },
+        'ID': { prefixes: ['81', '82', '83', '85', '87', '88', '89'], length: 10 },
+        'PH': { prefixes: ['9', '8'], length: 10 },
+        'VN': { prefixes: ['3', '5', '7', '8', '9'], length: 9 },
+        'TH': { prefixes: ['6', '8', '9'], length: 9 },
+        'CN': { prefixes: ['13', '15', '17', '18', '19'], length: 11 },
+        'JP': { prefixes: ['70', '80', '90'], length: 10 },
+        'AU': { prefixes: ['4'], length: 9 },
+        'NZ': { prefixes: ['21', '22', '27', '28'], length: 9 },
+        'SG': { prefixes: ['8', '9'], length: 8 },
+        'HK': { prefixes: ['5', '6', '9'], length: 8 },
+        'TW': { prefixes: ['9'], length: 9 },
+        'KR': { prefixes: ['10'], length: 10 }, // Corrected: 10 is the mobile prefix for KR
 
-        // Indonesia - Telkomsel (811, 812, 813, 821, 822, 823, 852), Indosat (814, 815, 816, 855, 856, 857, 858), XL (817, 818, 819, 859, 877, 878)
-        'ID': { prefixes: ['811', '812', '813', '821', '822', '852', '853', '855', '856'], length: 10 },
+        // --- MIDDLE EAST & AFRICA ---
+        'SA': { prefixes: ['50', '53', '54', '55', '56', '58', '59'], length: 9 },
+        'AE': { prefixes: ['50', '52', '54', '55', '56', '58'], length: 9 },
+        'QA': { prefixes: ['3', '5', '6', '7'], length: 8 },
+        'KW': { prefixes: ['5', '6', '9'], length: 8 },
+        'OM': { prefixes: ['7', '9'], length: 8 },
+        'BH': { prefixes: ['3', '6'], length: 8 },
+        'JO': { prefixes: ['77', '78', '79'], length: 9 },
+        'EG': { prefixes: ['10', '11', '12', '15'], length: 10 },
+        'TR': { prefixes: ['50', '53', '54', '55'], length: 10 },
+        'NG': { prefixes: ['70', '80', '81', '90', '91'], length: 10 },
+        'ZA': { prefixes: ['6', '7', '8'], length: 9 },
+        'IL': { prefixes: ['50', '51', '52', '53', '54', '55', '58'], length: 9 },
+        'MA': { prefixes: ['6', '7'], length: 9 },
+        'DZ': { prefixes: ['5', '6', '7'], length: 9 },
 
-        // Philippines - Smart (90, 91, 92, 93, 94, 98, 99), Globe (90, 91, 92, 93, 94, 95, 96, 97), Sun (92, 93)
-        'PH': { prefixes: ['900', '905', '906', '915', '916', '917', '926', '927', '935', '936', '945', '955', '965', '975', '995', '996', '997'], length: 10 },
+        // --- EUROPE ---
+        'GB': { prefixes: ['7'], length: 10 },
+        'DE': { prefixes: ['15', '16', '17'], length: 11 },
+        'FR': { prefixes: ['6', '7'], length: 9 },
+        'IT': { prefixes: ['3'], length: 10 },
+        'ES': { prefixes: ['6', '7'], length: 9 },
+        'RU': { prefixes: ['9'], length: 10 },
+        'PL': { prefixes: ['5', '6', '7', '8'], length: 9 },
+        'NL': { prefixes: ['6'], length: 9 },
+        'BE': { prefixes: ['4'], length: 9 },
+        'CH': { prefixes: ['7'], length: 9 },
+        'SE': { prefixes: ['7'], length: 9 },
+        'NO': { prefixes: ['4', '9'], length: 8 },
+        'DK': { prefixes: ['2', '3', '4', '5', '6', '7', '8', '9'], length: 8 },
+        'FI': { prefixes: ['4', '5'], length: 9 },
+        'IE': { prefixes: ['8'], length: 9 },
+        'PT': { prefixes: ['9'], length: 9 },
+        'GR': { prefixes: ['6'], length: 10 },
+        'AT': { prefixes: ['6'], length: 10 },
+        'HU': { prefixes: ['20', '30', '31', '70'], length: 9 },
+        'RO': { prefixes: ['7'], length: 9 },
+        'CZ': { prefixes: ['6', '7'], length: 9 },
+        'AL': { prefixes: ['67', '68', '69'], length: 9 },
 
-        // Vietnam - Viettel (32, 33, 34, 35, 36, 37, 38, 39), Vinaphone (81, 82, 83, 84, 85), MobiFone (70, 76, 77, 78, 79, 89, 90, 93)
-        'VN': { prefixes: ['32', '33', '34', '35', '36', '37', '38', '39', '70', '76', '77', '78', '79', '81', '82', '83', '84', '85', '89', '90', '93'], length: 9 },
-
-        // Poland - Orange (50, 51, 53, 57, 60, 66, 69, 78, 88), Play (50, 51, 53, 73, 78, 79, 88), Plus (60, 66, 69, 78, 79, 88), T-Mobile (72, 73, 78, 79, 88)
-        'PL': { prefixes: ['50', '51', '53', '57', '60', '66', '69', '72', '73', '78', '79', '88'], length: 9 },
+        // --- AMERICAS ---
+        'US': { prefixes: ['2', '3', '4', '5', '6', '7', '8', '9'], length: 10 },
+        'CA': { prefixes: ['2', '3', '4', '5', '6', '7', '8', '9'], length: 10 },
+        'MX': { prefixes: ['1'], length: 10 },
+        'BR': { prefixes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], length: 11 },
+        'AR': { prefixes: ['9'], length: 10 },
+        'CL': { prefixes: ['9'], length: 9 },
+        'CO': { prefixes: ['3'], length: 10 },
+        'PE': { prefixes: ['9'], length: 9 },
 
         // DEFAULT - Generic pattern for unlisted countries
-        'DEFAULT': { prefixes: ['5', '6', '7', '8', '9'], length: 10 }
+        'DEFAULT': { prefixes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'], length: 10 }
     };
 
     // --- Elements ---
@@ -111,17 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const validateBtn = document.getElementById('validateBtn');
     const exportBtn = document.getElementById('exportBtn');
     const fileUpload = document.getElementById('referenceFile');
+    const referenceInput = document.getElementById('referenceInput');
     const fileInfo = document.getElementById('fileInfo');
     const filterBtns = document.querySelectorAll('.filter-btn');
+    const purposeSelect = document.getElementById('purposeSelect');
+    const mainTitle = document.getElementById('mainTitle');
+    const mainDesc = document.getElementById('mainDesc');
+    const statsModal = document.getElementById('statsModal');
+    const closeStats = document.getElementById('closeStats');
+    const prefixList = document.getElementById('prefixList');
+    const statTotal = document.getElementById('statTotal');
+    const statDupes = document.getElementById('statDupes');
+    const toggleAdvanced = document.getElementById('toggleAdvanced');
+    const advancedOptions = document.getElementById('advancedOptions');
+    let currentMode = 'general';
 
     // --- State ---
     let generatedNumbers = [];
     let currentFilter = 'all';
     let referencePattern = null;
-
-    // --- LibPhoneNumber Instance ---
-    // The library is loaded globally as 'libphonenumber'
-    // We will use it to populate countries and generate examples.
 
     // --- Initialization ---
     populateCountries();
@@ -132,6 +115,36 @@ document.addEventListener('DOMContentLoaded', () => {
     exportBtn.addEventListener('click', exportToExcel);
 
     fileUpload.addEventListener('change', handleFileUpload);
+    referenceInput.addEventListener('input', handleManualReference);
+
+    toggleAdvanced.addEventListener('click', () => {
+        toggleAdvanced.classList.toggle('active');
+        advancedOptions.classList.toggle('collapsed');
+    });
+    closeStats.addEventListener('click', () => statsModal.classList.add('hidden'));
+    window.addEventListener('click', (e) => { if (e.target === statsModal) statsModal.classList.add('hidden'); });
+
+    purposeSelect.addEventListener('change', () => {
+        currentMode = purposeSelect.value;
+        if (currentMode === 'general') {
+            mainTitle.textContent = 'Number Generator';
+            mainDesc.textContent = 'Generate valid mobile numbers for any country.';
+        } else if (currentMode === 'whatsapp') {
+            mainTitle.textContent = 'WhatsApp Generator';
+            mainDesc.textContent = 'Generate STRICTLY MOBILE numbers for WhatsApp.';
+        } else if (currentMode === 'telegram') {
+            mainTitle.textContent = 'Telegram Generator';
+            mainDesc.textContent = 'Generate numbers optimized for Telegram.';
+        } else if (currentMode === 'call') {
+            mainTitle.textContent = 'Call Lead Generator';
+            mainDesc.textContent = 'Generate Mobile & Landline numbers for calls.';
+        } else if (currentMode === 'facebook') {
+            mainTitle.textContent = 'Facebook Lead Generator';
+            mainDesc.textContent = 'Generate social-ready mobile numbers.';
+        }
+        generatedNumbers = [];
+        updateUI();
+    });
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -146,8 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function populateCountries() {
         countrySelect.innerHTML = '';
-
-        // Comprehensive list of all countries (A-Z)
         const countries = [
             { code: 'AF', name: 'Afghanistan' }, { code: 'AL', name: 'Albania' }, { code: 'DZ', name: 'Algeria' },
             { code: 'AD', name: 'Andorra' }, { code: 'AO', name: 'Angola' }, { code: 'AR', name: 'Argentina' },
@@ -211,10 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { code: 'ZM', name: 'Zambia' }, { code: 'ZW', name: 'Zimbabwe' }
         ];
 
-        // Already sorted A-Z by name
         const fragment = document.createDocumentFragment();
         countries.forEach(c => {
-            // Get dial code using libphonenumber if possible, else just show name
             let dialCode = '';
             try {
                 dialCode = '+' + libphonenumber.getCountryCallingCode(c.code);
@@ -227,6 +236,50 @@ document.addEventListener('DOMContentLoaded', () => {
             fragment.appendChild(option);
         });
         countrySelect.appendChild(fragment);
+    }
+
+    function handleManualReference() {
+        const val = referenceInput.value.trim();
+        if (!val) {
+            if (!fileUpload.files.length) {
+                referencePattern = null;
+                fileInfo.classList.add('hidden');
+            }
+            return;
+        }
+
+        const parts = val.split(',').map(p => p.trim()).filter(p => p.length > 0);
+        const detectedPatterns = [];
+
+        parts.forEach(part => {
+            let cleanVal = part.replace(/[\s\-\(\)]/g, '');
+            const match = cleanVal.match(/^(\+|\d)\d{7,15}$/);
+
+            if (match) {
+                let rawNum = cleanVal.replace(/^00/, '+');
+                if (!rawNum.startsWith('+') && !part.startsWith('+')) {
+                    if (rawNum.length > 10) rawNum = '+' + rawNum;
+                } else if (part.startsWith('+') && !rawNum.startsWith('+')) {
+                    rawNum = '+' + rawNum;
+                }
+                detectedPatterns.push({
+                    fullExample: rawNum,
+                    length: rawNum.length
+                });
+            }
+        });
+
+        if (detectedPatterns.length > 0) {
+            referencePattern = detectedPatterns;
+            fileInfo.innerHTML = `Reference: <strong>${detectedPatterns.length} patterns</strong> detected.<br>Locked for mixed generation.`;
+            fileInfo.classList.remove('hidden');
+            fileInfo.style.color = 'var(--success)';
+        } else {
+            referencePattern = null;
+            fileInfo.innerHTML = `No valid reference numbers found.`;
+            fileInfo.classList.remove('hidden');
+            fileInfo.style.color = 'var(--danger)';
+        }
     }
 
     function handleFileUpload(e) {
@@ -262,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsText(file);
     }
 
-    function generateNumbers() {
+    async function generateNumbers() {
         const qty = parseInt(quantityInput.value);
         if (qty > 1000000) {
             showToast("Max limit is 1,000,000 numbers.");
@@ -271,21 +324,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         generatedNumbers = [];
         generateBtn.disabled = true;
+        const originalBtnHtml = generateBtn.innerHTML;
         generateBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Generating...';
 
-        setTimeout(async () => {
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        try {
             if (referencePattern) {
-                generateFromReference(qty);
+                await generateFromReferenceAsync(qty);
             } else {
                 await generateFromLibPhoneNumber(qty);
             }
 
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = '<i class="ph ph-lightning"></i> Generate Numbers';
-
             updateUI();
-            showToast(`${qty} numbers generated successfully!`);
-        }, 100);
+            showToast(`${generatedNumbers.length} numbers generated successfully!`);
+        } catch (err) {
+            console.error(err);
+            showToast("An error occurred during generation.");
+        } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = originalBtnHtml;
+        }
     }
 
     async function generateFromLibPhoneNumber(qty) {
@@ -298,159 +357,191 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {
             console.error("Error getting dial code:", e);
             showToast("Error getting country code. Using generic.");
-            generateFromReference(qty);
+            if (referencePattern) {
+                await generateFromReferenceAsync(qty);
+            }
             return;
         }
 
-        // Get the pattern for this country from MOBILE_PATTERNS
-        const pattern = MOBILE_PATTERNS[countryCode] || MOBILE_PATTERNS['DEFAULT'];
+        const pattern = await getEffectivePattern(countryCode);
         const totalLength = pattern.length;
 
-        // If user provided a custom prefix, use it directly
         if (customPrefix && /^\d+$/.test(customPrefix)) {
-            generateBatch(qty, { dialCode, length: totalLength, prefix: customPrefix });
+            await generateBatch(qty, { dialCode, length: totalLength, prefix: customPrefix });
             return;
         }
 
-        // No custom prefix - use MOBILE_PATTERNS database to select random valid prefixes
-        // Generate numbers using random prefixes from the pattern database
-        generateBatchWithRandomPrefixes(qty, { dialCode, length: totalLength, prefixes: pattern.prefixes });
+        await generateBatchWithRandomPrefixes(qty, { dialCode, length: totalLength, prefixes: pattern.prefixes });
     }
 
-    function generateBatchWithRandomPrefixes(qty, params) {
+    async function getEffectivePattern(countryCode) {
+        const mobileOnlyModes = ['whatsapp', 'telegram', 'facebook'];
+        const targetType = mobileOnlyModes.includes(currentMode) ? 'MOBILE' : (currentMode === 'call' ? 'FIXED_LINE' : 'MOBILE');
+
+        if (targetType === 'MOBILE' && MOBILE_PATTERNS[countryCode]) {
+            return MOBILE_PATTERNS[countryCode];
+        }
+
+        try {
+            const getExample = libphonenumber.getExampleNumber;
+            if (typeof getExample === 'function') {
+                const example = getExample(countryCode, targetType);
+                if (example && example.nationalNumber) {
+                    const nat = example.nationalNumber;
+                    return {
+                        prefixes: [nat.substring(0, 1), nat.substring(0, 2)],
+                        length: nat.length,
+                        type: targetType
+                    };
+                }
+            }
+        } catch (e) { }
+
+        return MOBILE_PATTERNS[countryCode] || MOBILE_PATTERNS['DEFAULT'];
+    }
+
+    async function generateBatchWithRandomPrefixes(qty, params) {
         const { dialCode, length, prefixes } = params;
+        const chunkSize = 2000;
+        let currentAttempts = 0;
+        const maxTotalAttempts = qty * 20;
 
-        let attempts = 0;
-        const maxAttempts = qty * 10; // Safety limit to prevent infinite loops
+        while (generatedNumbers.length < qty && currentAttempts < maxTotalAttempts) {
+            const batchLimit = Math.min(chunkSize, qty - generatedNumbers.length);
+            for (let i = 0; i < batchLimit && currentAttempts < maxTotalAttempts; i++) {
+                currentAttempts++;
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const randomLen = length - prefix.length;
 
-        while (generatedNumbers.length < qty && attempts < maxAttempts) {
-            attempts++;
+                let randomPart = '';
+                while (randomPart.length < randomLen) {
+                    const needed = randomLen - randomPart.length;
+                    if (needed >= 4) {
+                        randomPart += Math.floor(1000 + Math.random() * 9000).toString();
+                    } else {
+                        randomPart += Math.floor(Math.random() * 10).toString();
+                    }
+                }
+                if (randomPart.length > randomLen) randomPart = randomPart.substring(0, randomLen);
 
-            // Randomly select a prefix from the available prefixes
-            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const randomLen = length - prefix.length;
+                const fullNumber = `${dialCode}${prefix}${randomPart}`;
 
-            // Generate random number
-            let randomPart = '';
-            for (let j = 0; j < randomLen; j++) {
-                randomPart += Math.floor(Math.random() * 10);
+                let isValid = false;
+                try {
+                    const parsed = libphonenumber.parsePhoneNumber(fullNumber);
+                    isValid = parsed.isValid();
+                } catch (e) { }
+
+                if (isValid) {
+                    generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
+                } else {
+                    i--;
+                }
             }
-            const fullNumber = `${dialCode}${prefix}${randomPart}`;
-
-            // Validate immediately
-            let isValid = false;
-            try {
-                const parsed = libphonenumber.parsePhoneNumber(fullNumber);
-                isValid = parsed.isValid();
-            } catch (e) {
-                isValid = false;
-            }
-
-            // Only add if valid
-            if (isValid) {
-                generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
-            }
-        }
-
-        if (generatedNumbers.length < qty) {
-            showToast(`Generated ${generatedNumbers.length} valid numbers (some patterns failed validation)`);
+            generateBtn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> ${generatedNumbers.length} / ${qty}`;
+            await new Promise(resolve => setTimeout(resolve, 0));
         }
     }
 
-    function generateBatch(qty, params) {
+    async function generateBatch(qty, params) {
         const { dialCode, length, prefix } = params;
-        const randomLen = length - prefix.length;
+        const chunkSize = 2000;
+        let currentAttempts = 0;
+        const maxTotalAttempts = qty * 20;
 
-        let attempts = 0;
-        const maxAttempts = qty * 10; // Safety limit to prevent infinite loops
+        while (generatedNumbers.length < qty && currentAttempts < maxTotalAttempts) {
+            const batchLimit = Math.min(chunkSize, qty - generatedNumbers.length);
+            for (let i = 0; i < batchLimit && currentAttempts < maxTotalAttempts; i++) {
+                currentAttempts++;
+                const randomLen = length - prefix.length;
+                let randomPart = '';
+                while (randomPart.length < randomLen) {
+                    const needed = randomLen - randomPart.length;
+                    if (needed >= 4) {
+                        randomPart += Math.floor(1000 + Math.random() * 9000).toString();
+                    } else {
+                        randomPart += Math.floor(Math.random() * 10).toString();
+                    }
+                }
+                if (randomPart.length > randomLen) randomPart = randomPart.substring(0, randomLen);
 
-        while (generatedNumbers.length < qty && attempts < maxAttempts) {
-            attempts++;
+                const fullNumber = `${dialCode}${prefix}${randomPart}`;
 
-            // Generate random number
-            let randomPart = '';
-            for (let j = 0; j < randomLen; j++) {
-                randomPart += Math.floor(Math.random() * 10);
+                let isValid = false;
+                try {
+                    const parsed = libphonenumber.parsePhoneNumber(fullNumber);
+                    isValid = parsed.isValid();
+                } catch (e) { }
+
+                if (isValid) {
+                    generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
+                } else {
+                    i--;
+                }
             }
-            const fullNumber = `${dialCode}${prefix}${randomPart}`;
-
-            // Validate immediately
-            let isValid = false;
-            try {
-                const parsed = libphonenumber.parsePhoneNumber(fullNumber);
-                isValid = parsed.isValid();
-            } catch (e) {
-                isValid = false;
-            }
-
-            // Only add if valid
-            if (isValid) {
-                generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
-            }
-        }
-
-        if (generatedNumbers.length < qty) {
-            showToast(`Generated ${generatedNumbers.length} valid numbers (some patterns failed validation)`);
+            generateBtn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> ${generatedNumbers.length} / ${qty}`;
+            await new Promise(resolve => setTimeout(resolve, 0));
         }
     }
 
-    function generateFromReference(qty) {
-        // Check if user provided a custom prefix
+    async function generateFromReferenceAsync(qty) {
         const customPrefix = prefixInput.value.trim();
+        const patterns = Array.isArray(referencePattern) ? referencePattern : [referencePattern];
+        const chunkSize = 2000;
+        let currentAttempts = 0;
+        const maxTotalAttempts = qty * 20;
 
-        // Simple logic: Keep the first few digits (country code + maybe area code) 
-        // and randomize the last 5-7 digits.
-        const ex = referencePattern.fullExample;
-        const length = ex.length;
+        while (generatedNumbers.length < qty && currentAttempts < maxTotalAttempts) {
+            const batchLimit = Math.min(chunkSize, qty - generatedNumbers.length);
+            for (let i = 0; i < batchLimit && currentAttempts < maxTotalAttempts; i++) {
+                currentAttempts++;
+                const currentPattern = patterns[generatedNumbers.length % patterns.length];
+                const ex = currentPattern.fullExample;
+                const length = currentPattern.length;
 
-        let prefix, randomLen;
+                let prefix, randomLen;
+                if (customPrefix && /^\d+$/.test(customPrefix)) {
+                    const dialCodeMatch = ex.match(/^(\+\d{1,4})/);
+                    const dialCode = dialCodeMatch ? dialCodeMatch[1] : ex.substring(0, Math.min(length - 6, 4));
+                    prefix = dialCode + customPrefix;
+                    randomLen = length - prefix.length;
+                } else {
+                    const preserveLen = Math.min(length - 4, 5);
+                    prefix = ex.substring(0, preserveLen);
+                    randomLen = length - preserveLen;
+                }
 
-        // If custom prefix is provided, extract dial code and use custom prefix
-        if (customPrefix && /^\d+$/.test(customPrefix)) {
-            // Extract dial code from reference (e.g., +880 from +8801712345678)
-            const dialCodeMatch = ex.match(/^(\+\d{1,4})/);
-            const dialCode = dialCodeMatch ? dialCodeMatch[1] : ex.substring(0, Math.min(length - 6, 5));
-            prefix = dialCode + customPrefix;
-            randomLen = length - prefix.length;
-        } else {
-            // Traditional approach: Preservation heuristic: Keep first 4-5 chars (e.g. +121, +447)
-            const preserveLen = Math.min(length - 6, 5);
-            prefix = ex.substring(0, preserveLen);
-            randomLen = length - preserveLen;
-        }
+                let randomPart = '';
+                while (randomPart.length < randomLen) {
+                    const needed = randomLen - randomPart.length;
+                    if (needed >= 4) {
+                        randomPart += Math.floor(1000 + Math.random() * 9000).toString();
+                    } else {
+                        randomPart += Math.floor(Math.random() * 10).toString();
+                    }
+                }
+                if (randomPart.length > randomLen) randomPart = randomPart.substring(0, randomLen);
 
-        let attempts = 0;
-        const maxAttempts = qty * 10;
+                const fullNumber = `${prefix}${randomPart}`;
 
-        while (generatedNumbers.length < qty && attempts < maxAttempts) {
-            attempts++;
+                let isValid = false;
+                try {
+                    const parsed = libphonenumber.parsePhoneNumber(fullNumber);
+                    isValid = parsed.isValid();
+                } catch (e) { }
 
-            let randomPart = '';
-            for (let j = 0; j < randomLen; j++) {
-                randomPart += Math.floor(Math.random() * 10);
+                if (isValid) {
+                    generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
+                } else {
+                    i--;
+                }
             }
-            const fullNumber = `${prefix}${randomPart}`;
-
-            // Validate
-            let isValid = false;
-            try {
-                const parsed = libphonenumber.parsePhoneNumber(fullNumber);
-                isValid = parsed.isValid();
-            } catch (e) {
-                isValid = false;
-            }
-
-            if (isValid) {
-                generatedNumbers.push(createNumberObj(generatedNumbers.length + 1, fullNumber, 'Valid'));
-            }
-        }
-
-        if (generatedNumbers.length < qty) {
-            showToast(`Generated ${generatedNumbers.length} valid numbers from reference pattern`);
+            generateBtn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> ${generatedNumbers.length} / ${qty}`;
+            await new Promise(resolve => setTimeout(resolve, 0));
         }
     }
 
-    function createNumberObj(id, number, status = 'Valid') {
+    function createNumberObj(id, number, status = 'Generated') {
         return {
             id: id,
             number: number,
@@ -461,36 +552,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function validateNumbersStrict() {
         validateBtn.disabled = true;
-        validateBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Validating Format...';
+        validateBtn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Checking Batch...';
 
         setTimeout(() => {
-            let validCount = 0;
+            const originalCount = generatedNumbers.length;
+
+            // 1. Remove Duplicates
+            const seen = new Set();
+            const uniqueNumbers = [];
             generatedNumbers.forEach(item => {
-                // strict check using libphonenumber
-                let isValid = false;
+                if (!seen.has(item.number)) {
+                    seen.add(item.number);
+                    uniqueNumbers.push(item);
+                }
+            });
+            const duplicatesFound = originalCount - uniqueNumbers.length;
+            generatedNumbers = uniqueNumbers;
+
+            // 2. Calculate Prefix Stats
+            const prefixStats = {};
+            generatedNumbers.forEach(item => {
+                // Heuristic: Extract the prefix (first 3 digits after dial code)
+                // Or use libphonenumber to get national number and first 2 digits
                 try {
                     const parsed = libphonenumber.parsePhoneNumber(item.number);
-                    isValid = parsed.isValid(); // Checks length, prefix, etc.
+                    const nat = parsed.nationalNumber;
+                    const dial = '+' + parsed.countryCallingCode;
+                    // We'll group by DialCode + first 2-3 digits
+                    const pref = dial + ' ' + nat.substring(0, 2);
+                    prefixStats[pref] = (prefixStats[pref] || 0) + 1;
                 } catch (e) {
-                    isValid = false;
+                    const short = item.number.substring(0, 6);
+                    prefixStats[short] = (prefixStats[short] || 0) + 1;
                 }
-
-                item.status = isValid ? 'Valid' : 'Invalid';
-                if (isValid) validCount++;
             });
 
+            // 3. Update Modal UI
+            statTotal.textContent = generatedNumbers.length;
+            statDupes.textContent = duplicatesFound;
+
+            prefixList.innerHTML = '';
+            Object.entries(prefixStats)
+                .sort((a, b) => b[1] - a[1]) // Sort by count
+                .forEach(([pref, count]) => {
+                    const row = document.createElement('div');
+                    row.className = 'prefix-row';
+                    row.innerHTML = `
+                        <span class="prefix-tag">${pref}...</span>
+                        <span class="prefix-count">${count}</span>
+                    `;
+                    prefixList.appendChild(row);
+                });
+
+            // 4. Cleanup UI
             validateBtn.disabled = false;
-            validateBtn.innerHTML = '<i class="ph ph-check-circle"></i> Check Validity';
+            validateBtn.innerHTML = '<i class="ph ph-chart-pie"></i> Run Check';
 
-            // Auto-switch to 'valid' filter
-            currentFilter = 'valid';
-            filterBtns.forEach(b => b.classList.remove('active'));
-            const validBtn = Array.from(filterBtns).find(b => b.dataset.filter === 'valid');
-            if (validBtn) validBtn.classList.add('active');
+            statsModal.classList.remove('hidden');
+            updateUI();
 
-            renderTable();
-            showToast(`Strict Validation: ${validCount} valid numbers found.`);
-        }, 1000);
+            if (duplicatesFound > 0) {
+                showToast(`Removed ${duplicatesFound} duplicate numbers.`);
+            }
+        }, 800);
     }
 
     function updateUI() {
@@ -504,11 +628,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderTable() {
         resultsTable.innerHTML = '';
-
         let filtered = generatedNumbers;
-
         if (currentFilter === 'valid') {
-            filtered = generatedNumbers.filter(n => n.status === 'Valid');
+            filtered = generatedNumbers.filter(n => n.status === 'Valid' || n.status === 'Generated');
         } else if (currentFilter === 'odd') {
             filtered = generatedNumbers.filter(n => !n.isEven);
         } else if (currentFilter === 'even') {
@@ -532,23 +654,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const fragment = document.createDocumentFragment();
-
         toDisplay.forEach(item => {
             const tr = document.createElement('tr');
-
             let statusClass = '';
-            if (item.status === 'Valid') statusClass = 'status-valid';
+            if (item.status === 'Valid' || item.status === 'Generated') statusClass = 'status-valid';
             if (item.status === 'Invalid') statusClass = 'status-invalid';
-
-            // Clean number for links (remove + for wa.me sometimes, but usually required. WA needs pure digits)
             const cleanNum = item.number.replace(/\D/g, '');
-
             tr.innerHTML = `
                 <td>${item.id}</td>
                 <td style="font-family: monospace; font-size: 1.1em;">${item.number}</td>
                 <td class="${statusClass}">${item.status}</td>
                 <td class="action-cell">
-                    <a href="https://wa.me/${cleanNum}" target="_blank" class="action-btn wa" title="Check WhatsApp">
+                    <a href="https://api.whatsapp.com/send?phone=${cleanNum}" target="_blank" class="action-btn wa" title="Check WhatsApp">
                         <i class="ph ph-whatsapp-logo"></i>
                     </a>
                     <a href="https://t.me/+${cleanNum}" target="_blank" class="action-btn tg" title="Check Telegram">
@@ -558,9 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             fragment.appendChild(tr);
         });
-
         resultsTable.appendChild(fragment);
-
         if (filtered.length > displayLimit) {
             const infoRow = document.createElement('tr');
             infoRow.innerHTML = `<td colspan="4" style="text-align: center; color: var(--text-muted);">...and ${filtered.length - displayLimit} more (export to see all)</td>`;
@@ -570,10 +685,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function exportToExcel() {
         if (generatedNumbers.length === 0) return;
-
         const date = new Date().toISOString().slice(0, 10);
         const filename = `Numbers_${date}.xlsx`;
-
         const data = generatedNumbers.map(n => ({
             ID: n.id,
             Number: n.number,
@@ -582,12 +695,10 @@ document.addEventListener('DOMContentLoaded', () => {
             WhatsApp_Link: `https://wa.me/${n.number.replace(/\D/g, '')}`,
             Telegram_Link: `https://t.me/+${n.number.replace(/\D/g, '')}`
         }));
-
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Numbers");
         XLSX.writeFile(wb, filename);
-
         showToast("Export downloaded!");
     }
 
